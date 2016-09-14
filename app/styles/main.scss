@@ -27,3 +27,11 @@ body {
 		}
 	}
 }
+
+.clip-form{
+	display: flex;
+	input, label {
+		flex: 1 1 auto;
+		justify-content: space-between;
+	}
+}

@@ -4,6 +4,39 @@ import {VideoPlayer} from './components/videoPlayer'
 var update = require('react-addons-update');
 var videoSource = 'http://grochtdreis.de/fuer-jsfiddle/video/sintel_trailer-480.mp4';
 
+var VideoClipForm = React.createClass({
+	getInitialState: function() {
+		return {
+			name: this.props.name,
+			start: this.props.start,
+			stop: this.props.stop, 
+			onSubmit: this.props.onSubmit
+		}
+	}, 
+
+	submitHandler: function(e) {
+		e.preventDefault();
+		this.state.onSubmit({name: this.state.name, start: this.state.start, stop: this.state.stop});
+	},
+
+	changeHandler: function(e) {
+		var updatedState = update(this.state, { [e.target.className] : { $set: e.target.value } });
+		this.setState(updatedState);
+	}, 
+
+	render: function() {
+		return (
+			<form className="clip-form" onSubmit={this.submitHandler}>
+				<label>Name <input className="name"  value={this.state.name} onChange={this.changeHandler}></input></label>
+				<label>Start <input className="start" value={this.state.start} onChange={this.changeHandler}></input>seconds</label>
+				<label>Stop <input className="stop" value={this.state.stop} onChange={this.changeHandler}></input>seconds</label>
+				<input type="submit" value="Submit"></input>
+			</form>
+		);
+	}
+
+})
+
 var VideoClipperApp = React.createClass({
 	getInitialState: function() {
 		return {
@@ -26,6 +59,11 @@ var VideoClipperApp = React.createClass({
 		return this.state.clips[this.state.activeClip];
 	},
 
+	addNewClip: function(clip) {
+		var updatedState = update(this.state, { clips: { $set: this.state.clips.concat(clip) } });
+		this.setState(updatedState);
+	},
+
 	render: function() {
 		var activeClip = this.getActiveClip();
 		var thisComponent = this;
@@ -44,6 +82,8 @@ var VideoClipperApp = React.createClass({
 						); 
 					})}
 				</ul>
+				<VideoClipForm onSubmit={this.addNewClip}/>
+
 			</div>
 		);
 	}

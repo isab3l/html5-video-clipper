@@ -19,3 +19,9 @@ body {
       justify-content: space-between; }
     .video-clip-list .video-clip .time {
       text-align: right; }
+
+.clip-form {
+  display: flex; }
+  .clip-form input, .clip-form label {
+    flex: 1 1 auto;
+    justify-content: space-between; }
