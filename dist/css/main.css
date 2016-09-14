@@ -1,2 +1,21 @@
-li {
-  font-size: 2em; }
+@import 'https://fonts.googleapis.com/css?family=Oswald';
+body {
+  font-family: 'Oswald', sans-serif; }
+
+.video-clip-list {
+  list-style: none;
+  padding: 0; }
+  .video-clip-list .video-clip {
+    font-size: 2em;
+    border: 1px solid black;
+    margin: 10px 0;
+    padding: 10px;
+    border-radius: 3px;
+    display: flex; }
+    .video-clip-list .video-clip.active {
+      background-color: #b1e0e6; }
+    .video-clip-list .video-clip .name, .video-clip-list .video-clip .time {
+      flex: 1;
+      justify-content: space-between; }
+    .video-clip-list .video-clip .time {
+      text-align: right; }

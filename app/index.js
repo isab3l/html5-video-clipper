@@ -1,44 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import {VideoPlayer} from './components/videoPlayer'
 var update = require('react-addons-update');
-
 var videoSource = 'http://grochtdreis.de/fuer-jsfiddle/video/sintel_trailer-480.mp4';
-
-var VideoPlayer = React.createClass({
-	getInitialState: function() {
-		return {
-			src: this.props.src,
-			start: this.props.start,
-			stop: this.props.stop
-		};
-	},
-
-	getVideoUrl: function() {
-		return this.state.src.concat('#t=' +
-			(this.state.start || '') +
-			(this.state.stop ? ',' + this.state.stop : '')
-		);
-	},
-
-	componentWillReceiveProps: function(nextProps){
-		this.setState(nextProps);
-	},
-
-	componentDidUpdate: function(){
-		var video = document.getElementsByClassName('video-player')[0];
-		if (video) { video.load(); } //forces the video to restart and play new clip
-	},
-
-	render: function() {
-		console.log(this.getVideoUrl())
-		return (
-			<video className="video-player" autoPlay="autoplay" controls preload="metadata" style={{maxWidth: '100%'}}>
-      			<source src={this.getVideoUrl()}  type='video/mp4' />
-    		</video>
-		);
-	}
-	
-});
 
 var VideoClipperApp = React.createClass({
 	getInitialState: function() {
@@ -71,7 +35,13 @@ var VideoClipperApp = React.createClass({
 				<ul className="video-clip-list">
 					{this.state.clips.map(function(clip, index) { 
 						var clipClickHandler = thisComponent.setActiveClip.bind(thisComponent, index);
-						return <li key={index} onClick={clipClickHandler}> {clip.name} - {clip.start}s - {clip.stop}s </li>; 
+						return (
+							<li className={'video-clip' + (thisComponent.getActiveClip() === clip ? ' active' : '')} key={index} onClick={clipClickHandler}>
+								<span className="name">{clip.name}</span>
+								{thisComponent.getActiveClip() === clip && <span className="active-clip-control">testing</span>}
+								<span className="time">{clip.start}s{(clip.stop ? '-'+clip.stop+'s' : '')}</span>
+							</li>
+						); 
 					})}
 				</ul>
 			</div>

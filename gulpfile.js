@@ -10,7 +10,11 @@ gulp.task('build', function () {
         .transform('babelify', {presets: ['es2015', 'react']})
         .bundle()
         .pipe(source('bundle.js'))
-        .pipe(gulp.dest('dist'));
+        .pipe(gulp.dest('dist')) 
+        && 
+        gulp.src('./app/styles/*.scss')
+        .pipe(sass().on('error', sass.logError))
+        .pipe(gulp.dest('./dist/css'));
 });
 
 gulp.task('watch', ['build'], function () {
@@ -18,9 +22,3 @@ gulp.task('watch', ['build'], function () {
 });
 
 gulp.task('default', ['watch']);
-
-gulp.task('sass', function () {
-  return gulp.src('./app/styles/*.scss')
-    .pipe(sass().on('error', sass.logError))
-    .pipe(gulp.dest('./dist/css'));
-});
