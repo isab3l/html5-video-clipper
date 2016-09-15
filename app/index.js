@@ -17,12 +17,17 @@ var VideoClipForm = React.createClass({
 	submitHandler: function(e) {
 		e.preventDefault();
 		this.state.onSubmit({name: this.state.name, start: this.state.start, stop: this.state.stop});
+		this.clearForm();
 	},
 
 	changeHandler: function(e) {
 		var updatedState = update(this.state, { [e.target.className] : { $set: e.target.value } });
 		this.setState(updatedState);
-	}, 
+	},
+
+	clearForm: function() {
+		this.setState({name: '', start: '', stop: ''});
+	},
 
 	render: function() {
 		return (
@@ -42,7 +47,8 @@ var VideoClipperApp = React.createClass({
 		return {
 			src: this.props.src,
 			clips: this.getInitialClips(),
-			activeClip: 0
+			activeClip: 0,
+			clipEditorActive: false
 		};
 	},
 
@@ -54,22 +60,49 @@ var VideoClipperApp = React.createClass({
 		if(this.state.clips[clipIndex] === this.getActiveClip()) {
 			return; //selected clip is already active
 		}
-		var updatedState = update(this.state, { activeClip: { $set: clipIndex } });
+		var updatedState = update(this.state, { 
+			activeClip:       { $set: clipIndex },
+			clipEditorActive: { $set: false }
+		});
 		this.setState(updatedState);
 	},
 
 	getActiveClip: function(){
-		return (this.state.clips[this.state.activeClip] ? this.state.clips[this.state.activeClip] : this.state.clips[0]);
+		return this.state.clips[this.state.activeClip];
 	},
 
 	addNewClip: function(clip) {
-		var updatedState = update(this.state, { clips: { $set: this.state.clips.concat(clip) } });
+		var newClipIndex = this.state.clips.length;
+		var updatedState = update(this.state, { 	
+			clips:      { $push: [clip] },
+			activeClip: { $set: newClipIndex } 
+		});
 		this.setState(updatedState);
 	},
 
 	deleteClip: function(clipIndex, e){
 		this.state.clips.splice(clipIndex, 1)
-		var updatedState = update(this.state, { clips: {$set: this.state.clips} });
+		var updatedState = update(this.state, { 
+			clips:      { $set: this.state.clips },
+			activeClip: { $set: 0 }
+		});
+		this.setState(updatedState);
+	},
+
+	editClip: function(clip) {
+		var index = this.state.activeClip;
+		var updatedState = update(this.state, { 
+			clips: { [index] : {$set: clip} },
+			clipEditorActive: { $set: false }
+		});
+		this.setState(updatedState);
+	},
+
+	toggleClipEditor: function(){
+		var toggledState = !this.state.clipEditorActive;
+		var updatedState = update(this.state, { 
+			clipEditorActive: { $set: toggledState }
+		});
 		this.setState(updatedState);
 	},
 
@@ -78,7 +111,7 @@ var VideoClipperApp = React.createClass({
 		var thisComponent = this;
 
 		return (
-			<div className="video-clipper-app">
+			<div className="video-clipper-app">	
 				<VideoPlayer src={this.props.src} name={activeClip.name} start={activeClip.start} stop={activeClip.stop} />
 				<ul className="video-clip-list">
 					{this.state.clips.map(function(clip, index) { 
@@ -89,7 +122,15 @@ var VideoClipperApp = React.createClass({
 								<span className="name" onClick={clipClickHandler}>{clip.name}</span>
 								{(thisComponent.getActiveClip() === clip && index !==0) && 
 									<span className="active-clip-control">
-										<a onClick={clipDeleteHandler}>{'delete'}</a>
+										{thisComponent.state.clipEditorActive &&
+											<VideoClipForm name={clip.name} start={clip.start} stop={clip.stop} onSubmit={thisComponent.editClip}/>
+										}
+										{!thisComponent.state.clipEditorActive &&
+											<div className="edit-delete">
+												<a onClick={clipDeleteHandler}>{'delete'}</a>
+												<a onClick={thisComponent.toggleClipEditor}>{'edit'}</a>
+											</div>
+										}
 									</span>
 								}
 								<span className="time">{clip.start}s{(clip.stop ? '-'+clip.stop+'s' : '')}</span>
@@ -98,7 +139,6 @@ var VideoClipperApp = React.createClass({
 					})}
 				</ul>
 				<VideoClipForm onSubmit={this.addNewClip}/>
-
 			</div>
 		);
 	}
