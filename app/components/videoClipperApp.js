@@ -1,4 +1,6 @@
 import React from 'react';
+import {VideoPlayer} from './videoPlayer'
+import {VideoClipForm} from './VideoClipForm'
 
 export const VideoClipperApp = React.createClass({
 	getInitialState: function() {
