@@ -51,12 +51,15 @@ var VideoClipperApp = React.createClass({
 	},
 
 	setActiveClip: function(clipIndex){
+		if(this.state.clips[clipIndex] === this.getActiveClip()) {
+			return; //selected clip is already active
+		}
 		var updatedState = update(this.state, { activeClip: { $set: clipIndex } });
 		this.setState(updatedState);
 	},
 
 	getActiveClip: function(){
-		return this.state.clips[this.state.activeClip];
+		return (this.state.clips[this.state.activeClip] ? this.state.clips[this.state.activeClip] : this.state.clips[0]);
 	},
 
 	addNewClip: function(clip) {
@@ -64,19 +67,31 @@ var VideoClipperApp = React.createClass({
 		this.setState(updatedState);
 	},
 
+	deleteClip: function(clipIndex, e){
+		this.state.clips.splice(clipIndex, 1)
+		var updatedState = update(this.state, { clips: {$set: this.state.clips} });
+		this.setState(updatedState);
+	},
+
 	render: function() {
 		var activeClip = this.getActiveClip();
 		var thisComponent = this;
+
 		return (
 			<div className="video-clipper-app">
 				<VideoPlayer src={this.props.src} name={activeClip.name} start={activeClip.start} stop={activeClip.stop} />
 				<ul className="video-clip-list">
 					{this.state.clips.map(function(clip, index) { 
 						var clipClickHandler = thisComponent.setActiveClip.bind(thisComponent, index);
+						var clipDeleteHandler = thisComponent.deleteClip.bind(thisComponent, index);
 						return (
-							<li className={'video-clip' + (thisComponent.getActiveClip() === clip ? ' active' : '')} key={index} onClick={clipClickHandler}>
-								<span className="name">{clip.name}</span>
-								{thisComponent.getActiveClip() === clip && <span className="active-clip-control">testing</span>}
+							<li className={'video-clip' + (thisComponent.getActiveClip() === clip ? ' active' : '')} key={index}>
+								<span className="name" onClick={clipClickHandler}>{clip.name}</span>
+								{(thisComponent.getActiveClip() === clip && index !==0) && 
+									<span className="active-clip-control">
+										<a onClick={clipDeleteHandler}>{'delete'}</a>
+									</span>
+								}
 								<span className="time">{clip.start}s{(clip.stop ? '-'+clip.stop+'s' : '')}</span>
 							</li>
 						); 
