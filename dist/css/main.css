@@ -2,6 +2,15 @@
 body {
   font-family: 'Oswald', sans-serif; }
 
+.video-clipper-app {
+  max-width: 800px; }
+  .video-clipper-app h2 {
+    text-align: center; }
+
+.video-player {
+  max-width: 100%;
+  min-height: 200px; }
+
 .video-clip-list {
   list-style: none;
   padding: 0; }
@@ -16,6 +25,8 @@ body {
       background-color: #b1e0e6; }
     .video-clip-list .video-clip.editor .display-name, .video-clip-list .video-clip.editor .time {
       display: none; }
+    .video-clip-list .video-clip.editor .active-clip-control {
+      width: 100%; }
     .video-clip-list .video-clip .display-name, .video-clip-list .video-clip .time {
       flex: 1;
       justify-content: space-between; }
@@ -23,12 +34,23 @@ body {
       text-align: right; }
 
 .clip-form {
-  display: flex; }
+  display: flex;
+  font-size: 20px; }
   .clip-form input, .clip-form label {
     flex: 1 1 auto;
-    justify-content: space-between; }
-  .clip-form input.start, .clip-form input.stop {
-    width: 50px; }
+    justify-content: space-between;
+    vertical-align: top; }
+  .clip-form input {
+    height: 20px;
+    font-size: 14px;
+    text-align: center;
+    margin-left: 5px; }
+    .clip-form input.start, .clip-form input.stop {
+      width: 60px; }
+  .clip-form input[type="submit"] {
+    font-size: 20px; }
 
-.edit-delete a {
-  margin: 0 10px; }
+.edit-delete, .display-name {
+  cursor: pointer; }
+  .edit-delete a, .display-name a {
+    margin: 0 10px; }

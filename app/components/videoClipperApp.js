@@ -116,6 +116,7 @@ export const VideoClipperApp = React.createClass({
 						return thisComponent.getClipListingTemplate(clip, index);
 					})}
 				</ul>
+				<h2>{'Add a new clip:'}</h2>
 				<VideoClipForm onSubmit={this.addNewClip}/>
 			</div>
 		);

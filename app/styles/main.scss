@@ -4,6 +4,18 @@ body {
 	font-family: 'Oswald', sans-serif;
 }
 
+.video-clipper-app {
+	max-width: 800px;
+	h2 {
+		text-align: center;
+	}
+}
+
+.video-player {
+	max-width: 100%;
+	min-height: 200px;
+}
+
 .video-clip-list {
 	list-style: none;
 	padding: 0;
@@ -22,6 +34,10 @@ body {
 			.display-name, .time { 
 				display: none; 
 			}
+			.active-clip-control {
+				width: 100%;
+			}
+
 		}
 		.display-name, .time {
 			flex: 1;
@@ -35,16 +51,28 @@ body {
 
 .clip-form{
 	display: flex;
+	font-size: 20px;
 	input, label {
 		flex: 1 1 auto;
 		justify-content: space-between;
+		vertical-align: top;
 	}
-	input.start, input.stop {
-		width: 50px;
+	input {
+		height: 20px;
+		font-size: 14px;
+		text-align: center;
+		margin-left: 5px;
+		&.start, &.stop {
+			width: 60px;
+		}
+	}
+	input[type="submit"]{
+		font-size: 20px;
 	}
 }
 
-.edit-delete {
+.edit-delete, .display-name {
+	cursor: pointer;
 	a {
 		margin: 0 10px
 	}
