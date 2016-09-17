@@ -1,6 +1,8 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
 import {VideoPlayer} from './videoPlayer'
 import {VideoClipForm} from './VideoClipForm'
+var update = require('react-addons-update');
 
 export const VideoClipperApp = React.createClass({
 	getInitialState: function() {
@@ -66,6 +68,42 @@ export const VideoClipperApp = React.createClass({
 		this.setState(updatedState);
 	},
 
+	getActiveClipTemplate: function(clip, deleteHandler) {
+		return (
+			<span className="active-clip-control">
+				{this.state.clipEditorActive &&
+					<VideoClipForm name={clip.name} start={clip.start} stop={clip.stop} onSubmit={this.editClip}/>
+				}
+				{!this.state.clipEditorActive &&
+					<div className="edit-delete">
+						<a onClick={deleteHandler}>{'delete'}</a>
+						<a onClick={this.toggleClipEditor}>{'edit'}</a>
+					</div>
+				}
+		</span>);
+	},
+
+	getClipClassName: function(clip, index) {
+		var className = 'video-clip';
+		if (this.getActiveClip() === clip) { className += ' active' }
+		if (index !==0 && this.state.clipEditorActive && this.getActiveClip() === clip) { className += ' editor' }
+		return className;
+	},
+
+	getClipListingTemplate: function(clip, index){
+		var clipClickHandler = this.setActiveClip.bind(this, index);
+		var clipDeleteHandler = this.deleteClip.bind(this, index);
+		return (
+			<li className={this.getClipClassName(clip, index)} key={index}>
+				<span className="display-name" onClick={clipClickHandler}>{clip.name}</span>
+				{(this.getActiveClip() === clip && index !==0) && 
+					this.getActiveClipTemplate(clip, clipDeleteHandler)
+				}
+				<span className="time">{clip.start}s{(clip.stop ? '-'+clip.stop+'s' : '')}</span>
+			</li>
+		); 
+	},
+
 	render: function() {
 		var activeClip = this.getActiveClip();
 		var thisComponent = this;
@@ -75,27 +113,7 @@ export const VideoClipperApp = React.createClass({
 				<VideoPlayer src={this.props.src} name={activeClip.name} start={activeClip.start} stop={activeClip.stop} />
 				<ul className="video-clip-list">
 					{this.state.clips.map(function(clip, index) { 
-						var clipClickHandler = thisComponent.setActiveClip.bind(thisComponent, index);
-						var clipDeleteHandler = thisComponent.deleteClip.bind(thisComponent, index);
-						return (
-							<li className={'video-clip' + (thisComponent.getActiveClip() === clip ? ' active' : '')} key={index}>
-								<span className="name" onClick={clipClickHandler}>{clip.name}</span>
-								{(thisComponent.getActiveClip() === clip && index !==0) && 
-									<span className="active-clip-control">
-										{thisComponent.state.clipEditorActive &&
-											<VideoClipForm name={clip.name} start={clip.start} stop={clip.stop} onSubmit={thisComponent.editClip}/>
-										}
-										{!thisComponent.state.clipEditorActive &&
-											<div className="edit-delete">
-												<a onClick={clipDeleteHandler}>{'delete'}</a>
-												<a onClick={thisComponent.toggleClipEditor}>{'edit'}</a>
-											</div>
-										}
-									</span>
-								}
-								<span className="time">{clip.start}s{(clip.stop ? '-'+clip.stop+'s' : '')}</span>
-							</li>
-						); 
+						return thisComponent.getClipListingTemplate(clip, index);
 					})}
 				</ul>
 				<VideoClipForm onSubmit={this.addNewClip}/>

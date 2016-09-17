@@ -1,4 +1,5 @@
 import React from 'react';
+var update = require('react-addons-update');
 
 export const VideoClipForm = React.createClass({
 	getInitialState: function() {
@@ -29,8 +30,8 @@ export const VideoClipForm = React.createClass({
 		return (
 			<form className="clip-form" onSubmit={this.submitHandler}>
 				<label>Name <input className="name"  value={this.state.name} onChange={this.changeHandler}></input></label>
-				<label>Start <input className="start" value={this.state.start} onChange={this.changeHandler}></input>seconds</label>
-				<label>Stop <input className="stop" value={this.state.stop} onChange={this.changeHandler}></input>seconds</label>
+				<label>Start <input className="start" placeholder="seconds" value={this.state.start} onChange={this.changeHandler}></input></label>
+				<label>Stop <input className="stop" placeholder="seconds" value={this.state.stop} onChange={this.changeHandler}></input></label>
 				<input type="submit" value="Submit"></input>
 			</form>
 		);

@@ -14,7 +14,9 @@ body {
     display: flex; }
     .video-clip-list .video-clip.active {
       background-color: #b1e0e6; }
-    .video-clip-list .video-clip .name, .video-clip-list .video-clip .time {
+    .video-clip-list .video-clip.editor .display-name, .video-clip-list .video-clip.editor .time {
+      display: none; }
+    .video-clip-list .video-clip .display-name, .video-clip-list .video-clip .time {
       flex: 1;
       justify-content: space-between; }
     .video-clip-list .video-clip .time {
@@ -25,3 +27,8 @@ body {
   .clip-form input, .clip-form label {
     flex: 1 1 auto;
     justify-content: space-between; }
+  .clip-form input.start, .clip-form input.stop {
+    width: 50px; }
+
+.edit-delete a {
+  margin: 0 10px; }
